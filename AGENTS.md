@@ -43,6 +43,7 @@ These rules apply to every task in every repo and every tool. A repo's own AGENT
 
 ## Git
 - Never stage, commit, or push unless I directly ask for something that needs it ("commit this", "push it", "open a PR"). Otherwise tell me what changed.
+- Exception: after changing a rule in the ai_rules repo, commit and push it right away so every machine picks it up. One commit per rule, with a plain, concise message naming it: `add rule to compact finished superpowers docs`.
 - Commit messages are short, lowercase, and imperative, with no body unless asked: `implement menu apis`, `refactor geofencing`, `wip notifications`.
 - Never mention the AI tool anywhere in git: no `Co-authored-by`, "Generated with …", or tool names in commits, PRs, or branch names.
 - Run `git pull` right after switching branches.
