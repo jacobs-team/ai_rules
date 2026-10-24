@@ -28,6 +28,7 @@ These rules apply to every task in every repo and every tool. A repo's own AGENT
 - Diagnostics: fix `severity=error` only. Ignore warnings, info, hints, and lint noise unless asked.
 - Never re-add code I removed, even if an AI wrote it. Assume the removal was deliberate and ask. Never remove commented-out code unless asked.
 - Planning and brainstorming are prose only, with no code.
+- Teach as we go. When planning, designing, or brainstorming, explain the reasoning behind options and ask me questions instead of handing me a finished answer. Never offer to skip the questions.
 - Questions to me: keep them short, I'm not gonna read a novel to understand your question. Give context if it helps, but the question at the end should be short and reference that context. Don't ask questions with obvious answers. Pick the sensible default and state it.
 - Before asking me anything, think "Can I achieve this myself?"
 
