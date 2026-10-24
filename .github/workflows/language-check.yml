@@ -1,0 +1,113 @@
+name: language check
+
+on:
+  schedule:
+    - cron: "41 9 3 * *" # 3rd of each month, 09:41 UTC (early morning US Central)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: language-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check for Claude token
+        id: key
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "CLAUDE_CODE_OAUTH_TOKEN secret is not set. Run: claude setup-token, then gh secret set CLAUDE_CODE_OAUTH_TOKEN --repo ${{ github.repository }}" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Review language releases
+        if: steps.key.outputs.present == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          claude_args: >-
+            --max-turns 40
+            --allowedTools "Read,Glob,Grep,Edit,WebFetch,WebSearch,Bash(git diff:*),Bash(git status:*)"
+          prompt: |
+            You keep the `## Current language` section of each language doc in languages/ current. Agents
+            read these docs while coding, so the section tells them which language features and idioms are
+            newer than what they would reach for by default.
+
+            1. For each languages/*.md, read its `## Current language` section. It names the version it was
+               last reviewed at and links its official sources. Fetch those sources. Only trust them and
+               pages they link to on the same domains.
+            2. If a stable release newer than the reviewed version exists, find the language features and
+               officially recommended idioms it added or changed. Skip library additions, tooling, and bug
+               fixes unless they change how everyday code is written.
+            3. Edit only that section: add one line per release that brought something (newest first, one
+               short example each), update the reviewed version and date, and keep it to at most 8 bullets
+               by folding the oldest lines together. If nothing is newer, leave the file untouched.
+            4. Hard limits: never edit anything outside those sections, any other file, .github/workflows,
+               or git history. Do not commit, push or open PRs.
+            5. Write .github/language-check-report.md: a short section per language saying "no change" or
+               what you added, with the source links. If nothing changed anywhere, write exactly
+               "NO CHANGES" as the first line.
+
+      - name: Enforce limits
+        if: steps.key.outputs.present == 'true'
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, subprocess
+          def git(*a): return subprocess.run(["git", *a], capture_output=True, text=True).stdout
+          def outside_section(text):
+              return re.sub(r"^## Current language\n.*?(?=^## |\Z)", "", text, flags=re.S | re.M)
+          notes = []
+          for path in git("diff", "--name-only", "HEAD").split():
+              p = pathlib.Path(path)
+              in_scope = re.match(r"languages/[^/]+\.md$", path) and p.exists()
+              if in_scope and outside_section(p.read_text()) == outside_section(git("show", f"HEAD:{path}")):
+                  continue
+              subprocess.run(["git", "checkout", "HEAD", "--", path]); notes.append(f"reverted edit outside a Current language section in {path}")
+          for path in git("ls-files", "--others", "--exclude-standard").split():
+              if path != ".github/language-check-report.md":
+                  pathlib.Path(path).unlink(); notes.append(f"removed new file {path}")
+          if notes:
+              with open(".github/language-check-report.md", "a") as f:
+                  f.write("\n## Reverted by limits check\n" + "\n".join(f"- {n}" for n in notes) + "\n")
+          PY
+
+      - name: Decide
+        if: steps.key.outputs.present == 'true'
+        id: decide
+        run: |
+          report=.github/language-check-report.md
+          changed=$(git status --porcelain -- . ':!.github/language-check-report.md' | wc -l)
+          if [ ! -f "$report" ] || head -1 "$report" | grep -q '^NO CHANGES' || [ "$changed" -eq 0 ]; then
+            echo "open=false" >> "$GITHUB_OUTPUT"
+            { echo "## No language changes found"; [ -f "$report" ] && cat "$report"; } >> "$GITHUB_STEP_SUMMARY"
+            rm -f "$report"
+          else
+            echo "open=true" >> "$GITHUB_OUTPUT"
+            mv "$report" "$RUNNER_TEMP/report.md"
+            cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Open PR
+        if: steps.decide.outputs.open == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: language-check/${{ github.run_id }}
+          base: main
+          commit-message: update current language sections
+          title: update current language sections
+          body-path: ${{ runner.temp }}/report.md
+          delete-branch: true

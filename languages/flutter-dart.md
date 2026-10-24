@@ -13,12 +13,18 @@
 
 ## Language
 - Use Dart 3: exhaustive `switch` expressions, sealed classes, records, patterns, and dot-shorthand enum cases (`.venue`).
-- Use the newest syntax the package's SDK constraint allows ([language evolution](https://dart.dev/resources/language/evolution)). On 3.13+, that means primary constructors (`class const Point(final int x, final int y);`, with `this : assert(...)` for checks) and `new(...)`/`factory name(...)` for any extra constructors. On 3.12+, it means private named parameters (`{required this._x}`), and on 3.8+, null-aware elements (`[?maybeValue]`).
 - Never type a field or param as `num`. Use `int` or `double`.
 - Models we own get getters on the class or enum. Models we don't own (package or server types) get extensions.
 - Don't add a local alias variable just to null-check a field.
 - Use `const` constructors wherever possible.
 - `///` dartdoc on public APIs, with `{@template}`/`{@macro}` for reuse. No obvious inline comments.
+
+## Current language
+Reviewed at Dart 3.13 (2026-10-24) against [language evolution](https://dart.dev/resources/language/evolution) and the [SDK changelog](https://github.com/dart-lang/sdk/blob/main/CHANGELOG.md). Use the newest form the package's SDK constraint allows:
+- 3.13: primary constructors (`class const Point(final int x, final int y);`, `this : assert(...)` for checks), and `new(...)`/`factory name(...)` for any other constructor.
+- 3.12: private named parameters (`{required this._x}`, which callers pass as `x:`).
+- 3.10: dot shorthands (`.venue`).
+- 3.8: null-aware elements (`[?maybeValue]`).
 
 ## Project structure (life-event-planner pattern)
 ```

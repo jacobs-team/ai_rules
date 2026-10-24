@@ -12,3 +12,4 @@
 3. Add one line to the "Language docs" section of `AGENTS.md` naming the trigger files. This is the fallback for tools with no glob support (Codex, Gemini CLI, Grok, the chat apps).
 4. Add an entry to `languageDocs` in `tool/install.dart` with the file name, a description, and its globs. The installer writes the per-tool rules from it (Claude `~/.claude/rules/`, Copilot `~/.copilot/instructions/`, Antigravity `~/.gemini/config/rules/`, Cursor `~/.cursor/rules/`).
 5. Add a row to the table above.
+6. End the file with a `## Current language` section: the version it was reviewed at, links to the official release notes, and one short line per recent release with the features agents wouldn't reach for by default. `.github/workflows/language-check.yml` reads those links monthly and opens a PR when a newer release adds something; it may edit nothing outside that section.

@@ -62,7 +62,7 @@ These rules apply to every task in every repo and every tool. A repo's own AGENT
 - Don't pass styling into reusable components. Styling belongs at the call site and formatting belongs on the model.
 - Prefer plain loops to dense nested collection expressions. Don't filter data defensively.
 - Comments only for non-obvious domain constraints, kept short. Say what something *is*, never its change history. When behavior changes, don't append history to a comment; only edit it if it's now wrong. Never explain imports, codegen, or tooling.
-- Use the newest language features the project's language version supports (e.g. primary constructors, dot shorthands) over the older long-hand forms. Check the language's release notes for what's available, not memory.
+- Use the newest language features the project's language version supports over the older long-hand forms. Each language doc's `Current language` section lists them. If the project's SDK is newer than the version that section was reviewed at, check the release notes it links.
 - Group related constants in nested namespace classes, in every language (`AppDesign.spacing.md`, `Endpoints.coffee.random`).
 - Dev and deploy tooling must run on both Windows and macOS. Prefer cross-platform scripts (e.g. Dart) to shell. If a shell script is unavoidable, ship a PowerShell version next to the POSIX one.
 

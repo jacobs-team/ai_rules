@@ -22,6 +22,7 @@ Everything the agents read is generated from those by `tool/install.dart`. Never
 | `tool/install.dart` | Installs everything into each agent's global locations |
 | `.githooks/` | Re-run the installer after every commit, pull and rebase |
 | `.github/workflows/agent-format-check.yml` | Twice-monthly check of each vendor's docs for format changes |
+| `.github/workflows/language-check.yml` | Monthly check of each language's release notes; opens a PR updating only its `Current language` section |
 
 ## Set up a machine
 
