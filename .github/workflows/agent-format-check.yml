@@ -1,0 +1,125 @@
+name: agent format check
+
+on:
+  schedule:
+    - cron: "17 9 1,15 * *" # 1st and 15th, 09:17 UTC (early morning US Central)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: agent-format-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Check for Claude token
+        id: key
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "CLAUDE_CODE_OAUTH_TOKEN secret is not set. Run: claude setup-token, then gh secret set CLAUDE_CODE_OAUTH_TOKEN --repo ${{ github.repository }}" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Review vendor docs and update layout
+        if: steps.key.outputs.present == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          claude_args: >-
+            --max-turns 80
+            --allowedTools "Read,Glob,Grep,Edit,Write,WebFetch,WebSearch,Bash(git diff:*),Bash(git status:*),Bash(git mv:*),Bash(ls:*),Bash(cat:*),Bash(python3:*),Bash(dart analyze:*),Bash(dart format:*)"
+          prompt: |
+            You maintain the layout of this repository. It holds one set of AI agent instructions
+            (AGENTS.md), language docs (languages/) and manual-only skills (skills/). tool/install.dart
+            copies them into each tool's global locations, adding each tool's frontmatter, and
+            settings/*.json are merged into tools' settings files.
+
+            1. Read .github/agent-sources.yml. Fetch every listed source (vendor docs, changelogs, release
+               notes and specs). Only trust those official pages and pages they link to on the same domains.
+            2. For each vendor and spec, find changes since the repo was last updated
+               (`git log -1 --format=%cI`) that affect: global instruction file names or locations, skill
+               folder locations, rule frontmatter (paths/applyTo/globs/trigger/alwaysApply), skill
+               frontmatter, manual-only invocation flags (disable-model-invocation,
+               allow_implicit_invocation), Gemini command files, and commit-attribution settings.
+            3. Update the repo to match: tool/install.dart (the paths, frontmatter and files it writes),
+               settings/*.json, README.md and skills/README.md where they describe that layout. Keep every
+               skill manual-only and keep one shared skills/ folder. Run `dart analyze tool/install.dart`
+               and `dart format tool/install.dart` after editing it.
+            4. Hard limits:
+               - Never add, remove or rewrite skills. Only change skill frontmatter or file locations.
+               - Never change the wording of rules in AGENTS.md or languages/*.md.
+               - Never touch .github/workflows/ or git history. Do not commit, push or open PRs.
+            5. Write .github/agent-format-report.md: a short section per vendor and spec
+               (claude-code, gemini-cli, antigravity, codex, copilot, cursor, grok-build, agents-md,
+               agent-skills) saying "no change" or what changed, what you edited, and the source links.
+               If nothing needs to change anywhere, write exactly "NO CHANGES" as the first line.
+
+      - name: Enforce limits
+        if: steps.key.outputs.present == 'true'
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, subprocess
+          def git(*a): return subprocess.run(["git", *a], capture_output=True, text=True).stdout
+          def body(text): return re.sub(r"\A---\n.*?\n---\n", "", text, count=1, flags=re.S)
+          notes = []
+          # No new skills.
+          old = set(git("ls-tree", "-d", "--name-only", "HEAD:skills").split())
+          for d in pathlib.Path("skills").iterdir():
+              if d.is_dir() and d.name not in old:
+                  subprocess.run(["rm", "-rf", str(d)]); notes.append(f"removed new skill folder {d}")
+          # Rule and skill bodies are the user's; only frontmatter may change.
+          for path in git("diff", "--name-only", "HEAD").split():
+              if path == "AGENTS.md" or re.match(r"languages/.*\.md$|skills/.*/SKILL\.md$", path):
+                  p = pathlib.Path(path)
+                  if p.exists() and body(p.read_text()) != body(git("show", f"HEAD:{path}")):
+                      subprocess.run(["git", "checkout", "HEAD", "--", path]); notes.append(f"reverted body edit in {path}")
+          subprocess.run(["git", "checkout", "HEAD", "--", ".github/workflows"])
+          if notes:
+              with open(".github/agent-format-report.md", "a") as f:
+                  f.write("\n## Reverted by limits check\n" + "\n".join(f"- {n}" for n in notes) + "\n")
+          PY
+
+      - name: Decide
+        if: steps.key.outputs.present == 'true'
+        id: decide
+        run: |
+          report=.github/agent-format-report.md
+          changed=$(git status --porcelain -- . ':!.github/agent-format-report.md' | wc -l)
+          if [ ! -f "$report" ] || head -1 "$report" | grep -q '^NO CHANGES' || [ "$changed" -eq 0 ]; then
+            echo "open=false" >> "$GITHUB_OUTPUT"
+            { echo "## No format changes found"; [ -f "$report" ] && cat "$report"; } >> "$GITHUB_STEP_SUMMARY"
+            rm -f "$report"
+          else
+            echo "open=true" >> "$GITHUB_OUTPUT"
+            mv "$report" "$RUNNER_TEMP/report.md"
+            cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Open PR
+        if: steps.decide.outputs.open == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: agent-format-check/${{ github.run_id }}
+          base: main
+          commit-message: update agent formats
+          title: update agent formats
+          body-path: ${{ runner.temp }}/report.md
+          delete-branch: true

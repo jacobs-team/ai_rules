@@ -1,0 +1,8 @@
+#!/bin/sh
+# Re-deploys the rules and skills to every agent after the repo changes.
+cd "$(git rev-parse --show-toplevel)" || exit 0
+if command -v dart >/dev/null 2>&1; then
+  dart tool/install.dart
+else
+  fvm dart tool/install.dart
+fi

@@ -1,0 +1,55 @@
+# Official sources the agent-format-check workflow reads twice a month.
+# Only vendor docs, changelogs, release notes and specs. Add or fix URLs here, not in the workflow.
+# `files` are the repo files that encode each vendor's format; most of it lives in tool/install.dart.
+vendors:
+  claude-code:
+    files: [tool/install.dart, settings/claude.json, skills/*/SKILL.md]
+    sources:
+      - https://code.claude.com/docs/en/memory
+      - https://code.claude.com/docs/en/skills
+      - https://code.claude.com/docs/en/settings
+      - https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md
+  gemini-cli:
+    files: [tool/install.dart]
+    sources:
+      - https://geminicli.com/docs/cli/gemini-md/
+      - https://geminicli.com/docs/cli/skills/
+      - https://geminicli.com/docs/cli/custom-commands/
+      - https://github.com/google-gemini/gemini-cli/releases
+  antigravity:
+    files: [tool/install.dart]
+    sources:
+      - https://antigravity.google/docs/rules
+      - https://antigravity.google/docs/skills
+      - https://antigravity.google/docs/changelog
+  codex:
+    files: [tool/install.dart, skills/*/agents/openai.yaml]
+    sources:
+      - https://learn.chatgpt.com/docs/agent-configuration/agents-md
+      - https://learn.chatgpt.com/docs/build-skills
+      - https://github.com/openai/codex/releases
+  copilot:
+    files: [tool/install.dart, settings/copilot.json]
+    sources:
+      - https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-custom-instructions
+      - https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference
+      - https://code.visualstudio.com/docs/copilot/customization/custom-instructions
+      - https://code.visualstudio.com/docs/copilot/customization/agent-skills
+      - https://github.com/github/copilot-cli/blob/main/changelog.md
+  cursor:
+    files: [tool/install.dart]
+    sources:
+      - https://cursor.com/docs/rules
+      - https://cursor.com/docs/skills
+      - https://cursor.com/changelog
+  grok-build:
+    files: [tool/install.dart]
+    sources:
+      - https://docs.x.ai/build/features/project-rules
+      - https://docs.x.ai/build/features/skills-plugins-marketplaces
+      - https://x.ai/changelog/build
+specs:
+  agents-md:
+    sources: [https://agents.md/, https://github.com/agentsmd/agents.md]
+  agent-skills:
+    sources: [https://agentskills.io/specification, https://github.com/agentskills/agentskills]

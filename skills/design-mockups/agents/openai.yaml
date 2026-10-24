@@ -1,0 +1,3 @@
+# Codex: never pick this skill implicitly. Explicit `$<name>` invocation still works.
+policy:
+  allow_implicit_invocation: false
