@@ -74,5 +74,6 @@ These rules apply to every task in every repo and every tool. A repo's own AGENT
 - Explain the why and the trade-offs. Follow the codebase's existing patterns, and flag rather than silently diverge.
 - Report real problems only. No naming trivia or nitpicks.
 - Design docs and memories hold product/design decisions and general working rules only. No tooling events or one-off trivia.
+- A decision log holds only current decisions. When a decision changes, rewrite its original entry in place. Never add an entry that supersedes, amends, or layers on an earlier one.
 - When the work a superpowers spec or plan covers is complete, compact that doc in place. Cut finished checklists, step-by-step instructions, and code listings. Keep what was built, the decisions and why, any deviations from the plan, and where the code lives. Keep the file and its path so links still work.
 - Never put secrets, tokens, or personal data into files, commits, or memory.
