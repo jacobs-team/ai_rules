@@ -6,7 +6,7 @@
 - Always run Dart and Flutter through FVM: `fvm flutter …`, `fvm dart …`. Never call bare `flutter` or `dart`.
 - Monorepos use melos or pub workspaces. Use the repo's scripts (e.g. `melos run generate`).
 - Never edit `pubspec_overrides.yaml`. Put overrides in `pubspec.yaml` `dependency_overrides` so they show in git. You may delete stale *generated* `pubspec_overrides.yaml` files that break workspace resolution.
-- Lint with `very_good_analysis`. No `// ignore:` without a justifying comment. Fix only errors.
+- Lint with `very_good_analysis`. No `// ignore:` without a justifying comment. Fix only errors while a task is in progress; after a large task, a final round fixes the warnings and infos it left (see `AGENTS.md`).
 - Never read or edit generated files (`*.g.dart`, `*.freezed.dart`, `*.mapper.dart`, `*.gr.dart`, `*.config.dart`, `*.pb*.dart`, `*.gen.dart`). Read the source and regenerate.
 - The `build_runner` watcher (freezed, json_serializable, injectable) should always be running. If it isn't, ask me to start it. If you're working unsupervised and it has died, run it yourself.
 - Never run the app. See `AGENTS.md`.

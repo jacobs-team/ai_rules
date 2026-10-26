@@ -25,7 +25,7 @@ These rules apply to every task in every repo and every tool. A repo's own AGENT
 - If I say "fix it, don't stop until it's done", finish the whole job instead of handing back a command.
 - Never launch the app (Flutter or anything else) unless told to. I run it from my IDE so the debugger stays attached. Ask me to run it, then work with my instance.
 - Production is read-only. No state-changing calls. Read-only health, DNS, or explorer GETs are allowed, and you must call them out first.
-- Diagnostics: fix `severity=error` only. Ignore warnings, info, hints, and lint noise unless asked.
+- Diagnostics: while a task is in progress, fix `severity=error` only and ignore warnings, info, hints, and lint noise unless asked. After every large task, make one final round of fixes for the analyzer's warnings and infos in the code the task touched.
 - Never re-add code I removed, even if an AI wrote it. Assume the removal was deliberate and ask. Never remove commented-out code unless asked.
 - Planning and brainstorming are prose only, with no code.
 - Teach as we go. When planning, designing, or brainstorming, explain the reasoning behind options and ask me questions instead of handing me a finished answer. Never offer to skip the questions.
