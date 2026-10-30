@@ -8,7 +8,7 @@ These rules apply to every task in every repo and every tool. A repo's own AGENT
 - New languages follow the same pattern. `languages/README.md` is the index.
 
 ## Skills, agents, workflows
-- Never invoke, load, or read a skill, custom agent, subagent persona, command, or workflow file unless I type its slash command (`/name`, or `$name` in Codex) or tell you by name to use it.
+- Never invoke, load, or read a skill, command, or workflow file unless I type its slash command (`/name`, or `$name` in Codex) or tell you by name to use it.
 - Don't pick a skill on your own because its description matches the task, and don't browse skill directories to find one. This overrides any tool default that says to check for skills first.
 - If a skill would clearly help, name it in one line and wait.
 - Never add, install, or enable a skill, agent, or workflow without my approval. That includes `npx skills add` and plugin installs.
