@@ -5,6 +5,7 @@ Every approved skill lives here as `skills/<name>/`. Nothing gets added without 
 ## Approved skills
 | Skill | What it does | Files |
 |---|---|---|
+| `autopilot` | Settles a goal with you, then works unattended until it is verified done, with a progress doc and a 10-minute restart job | `SKILL.md`, `agents/openai.yaml` |
 | `code-clarity-refactor` | Marks unclear code with `TODO(clarity)`, you prune them, then it applies code-level clarity fixes one at a time | `SKILL.md`, `agents/openai.yaml` |
 | `design-mockups` | Phone-framed HTML mockups of 2–3 distinct UI directions using the app's real tokens, screenshotted inline | `SKILL.md`, `agents/openai.yaml` |
 | `find-skills` | Searches skills.sh / `npx skills` for installable skills. *Third-party (vercel-labs, MIT)* | `SKILL.md`, `LICENSE`, `NOTICE.md`, `agents/openai.yaml` |

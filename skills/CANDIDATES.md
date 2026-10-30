@@ -1,6 +1,6 @@
 # Skill / agent / workflow candidates
 
-**Status (2026-10-30):** you approved 7 skills, now in `skills/`: code-clarity-refactor, design-mockups, find-skills, rename-project, stacked-mrs, update-ai-rules, upgrade-dependencies. `update-ai-rules` was written for this repo, not taken from `raw/`. Everything else is ❌ not approved and is **not** in the repo (no agents, no Roo rules). Approving one later follows the steps in `skills/README.md`.
+**Status (2026-10-30):** you approved 8 skills, now in `skills/`: autopilot, code-clarity-refactor, design-mockups, find-skills, rename-project, stacked-mrs, update-ai-rules, upgrade-dependencies. `autopilot` and `update-ai-rules` were written for this repo, not taken from `raw/`. Everything else is ❌ not approved and is **not** in the repo (no agents, no Roo rules). Approving one later follows the steps in `skills/README.md`.
 
 - **68 unique user-authored candidates:** 50 skills, 10 custom agents, and 8 Roo mode rule sets. No user-authored slash commands were found in `.claude/commands`, `.gemini/commands`, `.github/prompts`, or `~/.codex/prompts`.
 - Paths are relative to `C:\Users\jb\Desktop\AI-Instructions\raw\`, without the `mac/` or `pc/` prefix (see the Machine column). "Identical" means the content hash matches across copies.

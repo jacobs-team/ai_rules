@@ -49,12 +49,7 @@ These rules apply to every task in every repo and every tool. A repo's own AGENT
 - Before asking me anything, think "Can I achieve this myself?"
 
 ## Autopilot mode
-- Active only when I start a task with "autopilot" and a goal. Then finish the goal however long it takes, and end a turn only when the goal is verified done or a decision is genuinely mine. Every other rule still applies; if the goal needs an exception (running the app, committing), I grant it in the goal.
-- Before any work, write the progress doc, `docs/autopilot.md` in the repo or the file I name: the goal, what done looks like, what is finished, what is in progress with the exact next step, open questions, and decisions with their why. It holds the current state, not a log: rewrite it in place. Update it and any project docs the work touched after every step and before the next, never in a batch at the end, so a context compaction or a fresh session can resume from the docs alone.
-- Then create the restart job: a recurring job every 10 minutes whose prompt is "Autopilot: read docs/autopilot.md. If the goal is verified done, delete this job and report. Otherwise resume from its next step and keep going." In Claude Code that is the session cron tool (`/loop 10m` uses it). It fires only while the session is idle, so it never interrupts work in progress; that is the "ignored while in progress" behaviour, so add no other check for it. Its jobs expire after 7 days, so on every wake-up confirm the job still exists and recreate it if it is gone. In a tool with no scheduler, say so once and keep going in the current turn.
-- On every wake-up, read the progress doc before anything else and continue from its next step. Never re-plan from scratch.
-- When blocked on a decision only I can make, write the question under open questions, keep going on everything that doesn't depend on it, and ask only when nothing else is left. Never end a turn with a plan, a question I could answer myself, or a promise of work.
-- Done means every item under "what done looks like" is verified, not just written. Then delete the job, write the final state into the progress doc, and report what was built, the decisions, and what needs my eyes.
+- When I start a task with "autopilot", run the `autopilot` skill (`/autopilot`).
 
 ## Editing files
 - **Manual / ask-permission mode** (each edit needs my approval): make every change through the tool's normal reviewable edit flow, one diff per change. Never get around that review with `sed`, find/replace commands, `python`/`node` scripts, heredocs, redirection, or shell deletes. Use the shell only to read, search, and run analyzers or generators.
