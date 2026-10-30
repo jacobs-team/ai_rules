@@ -91,8 +91,8 @@ Run these once after setting up a machine, and again after big agent updates.
 
 | Agent | Check |
 |---|---|
-| Claude Code | `/memory` lists `~/.claude/CLAUDE.md`. In a Dart project, `/context` shows the Flutter doc only after a `.dart` file has been read. `/skills` lists the six skills. `/plugin` shows `superpowers` disabled. |
-| Codex | `/skills` lists the six. No command lists loaded instructions, so ask *"Summarize your global instructions"*. |
+| Claude Code | `/memory` lists `~/.claude/CLAUDE.md`. In a Dart project, `/context` shows the Flutter doc only after a `.dart` file has been read. `/skills` lists every skill in `skills/`. `/plugin` shows `superpowers` disabled. |
+| Codex | `/skills` lists every skill in `skills/`. No command lists loaded instructions, so ask *"Summarize your global instructions"*. |
 | Copilot CLI | `/instructions` lists `copilot-instructions.md`. `/skills list`. |
 | VS Code Copilot | The References list under a reply shows the instruction files. The `/` menu lists the skills. |
 | Gemini CLI | `/memory show` contains the master. `/stacked-mrs` exists as a command. |

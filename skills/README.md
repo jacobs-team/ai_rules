@@ -11,6 +11,7 @@ Every approved skill lives here as `skills/<name>/`. Nothing gets added without 
 | `rename-project` | Renames a fresh `flutter_template` clone: package, bundle IDs, display names, leftovers | `SKILL.md`, `agents/openai.yaml` |
 | `stacked-mrs` | Splits a finished branch into stacked, small MR/PR branches. Stages each slice; you commit | `SKILL.md`, `agents/openai.yaml` |
 | `upgrade-dependencies` | Flutter SDK + all deps (single package or melos/pub workspace), migrations, native Android/iOS, GitHub Actions | `SKILL.md`, `agents/openai.yaml` |
+| `update-ai-rules` | Changes a rule or skill in this repo, commits and pushes it, checks the installed copies, and loads it into the current session | `SKILL.md`, `agents/openai.yaml` |
 
 ## How to invoke (per tool)
 | Tool | Invoke | What keeps it hidden otherwise |
