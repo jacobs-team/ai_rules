@@ -14,6 +14,22 @@ These rules apply to every task in every repo and every tool. A repo's own AGENT
 - Never add, install, or enable a skill, agent, or workflow without my approval. That includes `npx skills add` and plugin installs.
 - When I invoke a skill your tool hasn't loaded natively, read `~/.ai_rules/skills/<name>/SKILL.md` (and only that skill's folder) and follow it. Never open other skill folders.
 
+## Side agents
+- There are only four valid reasons: independent work that can run in parallel, output too noisy for the main thread (a wide search, a full test log), a fresh-eyes review, or a job that should have fewer tools.
+- Keep small or tightly coupled work in the main session. A fresh agent has to re-learn what this session already knows, so it is often slower. Code that shares context with other changes in progress, or depends on them, isn't parallel work.
+- Run at most 3 at once. Each one owns whole files, that nothing else edits while it runs. Never split one change across agents.
+- Write the brief for a colleague who has seen none of this chat:
+  - the goal and why it matters
+  - what done looks like
+  - the files it may create or edit, and what is off-limits
+  - the rules that apply, restated in the brief
+  - the reply format: a short summary, the files changed, and the commands run with their output
+- Agents never run generators or watchers, or create more agents. Reviewers and searchers get read-only tools.
+- Fork when the task needs this conversation's context. Use a fresh agent when the point is that it hasn't seen it (review).
+- Reviewer briefs check the work against its spec, report correctness gaps only.
+- To continue an agent's work, message that same agent instead of starting a new one. Wait for its completion notice, and never report results before it returns.
+- An agent's report is a claim, not a fact. Read every line it wrote as if it were a PR and check its evidence. Then tell me what it did and what needs my eyes.
+
 ## Working method
 - Answer questions, then stop. A question is not permission to change code. Defend the current design if it is right. If something is genuinely better, propose it and wait. Answer status and yes/no questions straight away, without new verification runs.
 - Strict scope: do exactly what was asked. No unrequested checks, side findings, refactors, or cleanups.
