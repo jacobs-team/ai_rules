@@ -39,7 +39,7 @@ These rules apply to every task in every repo and every tool. A repo's own AGENT
 - If behavior looks deliberate, describe it and ask. Don't call it a bug.
 - Cancelled or rejected actions are dead. Don't retry or re-raise them. A rejected edit cancels only that edit, so carry on with the rest. An approved edit prompt is that file's approval, so move on without asking in chat.
 - If I say "fix it, don't stop until it's done", finish the whole job instead of handing back a command.
-- Never launch the app (Flutter or anything else) unless told to. I run it from my IDE so the debugger stays attached. Ask me to run it, then work with my instance.
+- Never launch a Flutter app unless told to. I run it from my IDE so the debugger stays attached. Ask me to run it, then work with my instance. Anything else a task needs running (servers, CLIs, game clients, sandboxes) you may start yourself, within the project's own rules.
 - Production is read-only. No state-changing calls. Read-only health, DNS, or explorer GETs are allowed, and you must call them out first.
 - Diagnostics: while a task is in progress, fix `severity=error` only and ignore warnings, info, hints, and lint noise unless asked. After every large task, make one final round of fixes for the analyzer's warnings and infos in the code the task touched.
 - Never re-add code I removed, even if an AI wrote it. Assume the removal was deliberate and ask. Never remove commented-out code unless asked.
