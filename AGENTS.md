@@ -35,7 +35,8 @@ These rules apply to every task in every repo and every tool. A repo's own AGENT
 - Strict scope: do exactly what was asked. No unrequested checks, side findings, refactors, or cleanups.
 - Find the root cause before fixing anything. Reproduce against the live system, and read framework or package source if needed. A change to a format, contract, or data shape that only hides a symptom is a hack. Fully back out a failed fix before trying the next one.
 - Fix the design, don't patch around it. When new behavior doesn't fit, change the structure so it fits naturally. No bolted-on flags, special cases, or nullable fields. Ask "if this requirement had existed from day one, how would this code look?"
-- Check live sources. Read a package's current hosted docs at the point of use, not from memory, and say what you checked. If the docs are unreachable, say so. Explain data-driven UI only after calling the real endpoints.
+- Check live sources. Before writing code against any package, framework, SDK, tool, or API, read its current hosted docs at the point of use, never from memory, and say what you checked. If the docs are unreachable, say so. Explain data-driven UI only after calling the real endpoints.
+- Before adding a package or installing a tool from the CLI, look up its latest stable version on its registry or release page, read that version's docs, then install that exact version and use it as those docs describe. If the project's constraints rule out the latest, say which version you picked and why.
 - If behavior looks deliberate, describe it and ask. Don't call it a bug.
 - Cancelled or rejected actions are dead. Don't retry or re-raise them. A rejected edit cancels only that edit, so carry on with the rest. An approved edit prompt is that file's approval, so move on without asking in chat.
 - If I say "fix it, don't stop until it's done", finish the whole job instead of handing back a command.
